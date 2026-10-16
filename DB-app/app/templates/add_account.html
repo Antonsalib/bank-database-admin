@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_style.css') }}">
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="container account">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <!-- Account Form -->
+        <h1>Add a New Account</h1>
+        <form action="{{ url_for('account.add_account') }}" method="POST" class="form">
+            <div class="form-group">
+                <label for="customer_id">Customer ID</label>
+                <input type="number" id="customer_id" name="customer_id" placeholder="Enter customer id..." required>
+            </div>
+            <div class="form-group">
+                <label for="balance">Balance</label>
+                <input type="number" id="balance" name="balance" placeholder="Enter 2345.24..." step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="account_status">Account Status</label>
+                <select id="account_status" name="account_status" required>
+                    <option value="" disabled selected>Choose an account status...</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="account_type">Account Type</label>
+                <select id="account_type" name="account_type" required>
+                    <option value="" disabled selected>Choose an account type...</option>
+                    <option value="Checking">Checking</option>
+                    <option value="Savings">Savings</option>
+                    <option value="Credit Card">Credit Card</option>
+                </select>
+            </div>
+            <div class="button-action">
+                <a href="{{ url_for('account.Accounts') }}" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

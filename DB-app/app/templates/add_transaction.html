@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_style.css') }}">
+</head>
+<body>
+
+    <!-- Main Content -->
+    <div class="container loan">
+		<!-- Flash Messages -->
+		{% with messages = get_flashed_messages(with_categories=True) %}
+			{% if messages %}
+				<div class="flash-messages">
+					{% for category, message in messages %}
+						<div class="alert {{ category }}">{{ message }}</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+		{% endwith %}
+        <!-- Transaction Form -->
+        <h1 class="cus">Add a New Transaction</h1>
+        <form action="{{ url_for('transaction.add_transaction') }}" method="POST" class="form">
+            <div class="form-group">
+                <label for="account_id">Account ID</label>
+                <input type="number" id="account_id" name="account_id" placeholder="Enter Account ID..." required>
+            </div>
+			<div class="form-group">
+                <label for="related_account_id">Related Account ID (if applicable)</label>
+                <input type="number" id="related_account_id" name="related_account_id" placeholder="Enter Account ID...">
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" id="amount" name="amount" placeholder="Enter 300.40..." step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="transaction_date">Date</label>
+                <input type="date" id="date" name="transaction_date" placeholder="Enter a Date..." required>
+            </div>
+            <div class="form-group">
+                <label for="transaction_type">Transaction Type</label>
+				<select id="transaction_type" name="transaction_type" required>
+                    <option value="" disabled selected>Choose a transaction type...</option>
+                    <option value="Withdrawal">Withdrawal</option>
+					<option value="Deposit">Deposit</option>
+					<option value="Payment">Payment</option>
+					<option value="Transfer">Transfer</option>
+					<option value="Purchase">Purchase</option>
+                </select>
+            </div>
+            <div class="button-action">
+                <a href="{{ url_for('transaction.transactions') }}" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

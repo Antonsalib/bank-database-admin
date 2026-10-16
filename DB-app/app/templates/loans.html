@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loans · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'loans' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Loans</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading">
+                    <div><p class="eyebrow">TABLE · LOAN</p><h1>Loans</h1><p class="page-description">Review lending records, customer links, and loan status.</p></div>
+                    <a href="{{ url_for('loan.add_loan') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add loan</a>
+                </section>
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Loan records</h2><p>{{ loans|length }} records in this table</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
+                    <div class="table-scroll"><table class="data-table">
+                        <thead><tr><th>Loan</th><th>Customer</th><th>Amount</th><th>Interest rate</th><th>Status</th><th class="actions-heading">Actions</th></tr></thead>
+                        <tbody>{% for loan in loans %}
+                            <tr>
+                                <td><span class="record-id">LN-{{ loan.loan_id }}</span></td>
+                                <td><span class="primary-cell">{{ loan.first_name }} {{ loan.last_name }}</span><span class="secondary-cell">Customer #{{ loan.customer_id }}</span></td>
+                                <td class="numeric">${{ "{:,.2f}".format(loan.loan_amount) }}</td>
+                                <td>{{ loan.interest_rate }}%</td>
+                                <td><span class="status-badge {% if loan.loan_status == 'Approved' %}status-success{% elif loan.loan_status == 'Pending' %}status-warning{% else %}status-neutral{% endif %}">{{ loan.loan_status }}</span></td>
+                                <td class="row-actions"><a href="{{ url_for('loan.update_loan', loan_id=loan.loan_id) }}">Edit</a><a class="danger-link" href="{{ url_for('loan.delete_confirmation', loan_id=loan.loan_id) }}">Delete</a></td>
+                            </tr>
+                        {% else %}<tr><td class="empty-state" colspan="6">No loans found. Add a loan to get started.</td></tr>{% endfor %}</tbody>
+                    </table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: Loan</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

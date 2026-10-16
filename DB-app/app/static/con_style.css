@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+    display: grid;
+    min-height: 100vh;
+    margin: 0;
+    padding: 18px;
+    place-items: center;
+    color: #202b3d;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f7fb;
+}
+.modal-overlay { display: grid; width: 100%; min-height: calc(100vh - 36px); place-items: center; }
+.modal-container {
+    position: relative;
+    width: min(100%, 430px);
+    padding: 34px 34px 28px;
+    border: 1px solid #e8edf3;
+    border-radius: 13px;
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 20px 60px rgba(25,42,66,.12);
+}
+.close-btn { position: absolute; top: 13px; right: 15px; border: 0; color: #9ca6b4; font: 22px sans-serif; background: none; cursor: pointer; }
+.modal-icon { display: grid; width: 48px; height: 48px; margin: 0 auto 19px; place-items: center; border-radius: 50%; color: #c8666a; font-size: 18px; background: #fff0f0; }
+.modal-icon span { font-size: 0; }
+.modal-icon span::before { content: '!'; font: 700 23px 'Manrope', sans-serif; }
+h2 { margin: 0 0 9px; color: #202b3d; font: 700 20px 'Manrope', sans-serif; letter-spacing: -.4px; }
+p { margin: 0; color: #7b8797; font-size: 12px; line-height: 1.7; }
+.modal-actions { display: flex; justify-content: center; gap: 9px; margin-top: 25px; }
+.inline-form { margin: 0; }
+.btn-cancel, .btn-delete {
+    display: inline-flex;
+    min-height: 39px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    font: 600 11px 'DM Sans', sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn-cancel { border-color: #e1e6ed; color: #687588; background: #fff; }
+.btn-cancel:hover { background: #f7f8fb; }
+.btn-delete { color: #fff; background: #c95a61; }
+.btn-delete:hover { background: #b4464e; }

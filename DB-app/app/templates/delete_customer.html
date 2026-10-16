@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Deletion</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='con_style.css') }}">
+</head>
+<body>
+    <div class="modal-overlay">
+        <div class="modal-container">
+            <button class="close-btn">&times;</button>
+            <div class="modal-icon">
+                <span>&#x274C;</span>
+            </div>
+            <h2>Are you sure?</h2>
+            <p>Do you really want to delete <strong>{{ customer.first_name }} {{ customer.last_name }}</strong>? This process cannot be undone.</p>
+            <div class="modal-actions">
+                <a href="{{ url_for('customer.Customers') }}" class="btn-cancel">Cancel</a>
+                <form action="{{ url_for('customer.delete_confirmation') }}?customer_id={{ customer.customer_id }}" method="POST" class="inline-form">
+                    <button type="submit" class="btn-delete">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_style.css') }}">
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="cus">Update Account</h1>
+        <form action="{{ url_for('account.update_account', account_id=account.account_id) }}" method="POST" class="form">
+            <div class="form-group">
+                <label for="customer_id">Customer ID:</label>
+                <input type="number" id="customer_id" name="customer_id" value="{{ account.customer_id }}" required>
+            </div>
+            <div class="form-group">
+                <label for="balance">Balance:</label>
+                <input type="number" id="balance" name="balance" value="{{ account.balance }}" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="account_status">Account Status</label>
+                <select id="account_status" name="account_status" required>
+                    <option value="" disabled {{ 'selected' if not account.account_status else '' }}>Choose an account status...</option>
+                    <option value="Active" {{ 'selected' if account.account_status == 'Active' else '' }}>Active</option>
+                    <option value="Inactive" {{ 'selected' if account.account_status == 'Inactive' else '' }}>Inactive</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="account_type">Account Type</label>
+                <select id="account_type" name="account_type" required>
+                    <option value="" disabled {{ 'selected' if not account.account_type else '' }}>Choose an account type...</option>
+                    <option value="Checking" {{ 'selected' if account.account_type == 'Checking' else '' }}>Checking</option>
+                    <option value="Savings" {{ 'selected' if account.account_type == 'Savings' else '' }}>Savings</option>
+                    <option value="Credit Card" {{ 'selected' if account.account_type == 'Credit Card' else '' }}>Credit Card</option>
+                </select>
+            </div>
+            <div class="button-action">
+                <a href="{{ url_for('account.Accounts') }}" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-update">Update</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

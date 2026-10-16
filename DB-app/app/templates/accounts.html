@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounts · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'accounts' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Accounts</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading">
+                    <div><p class="eyebrow">TABLE · ACCOUNTS</p><h1>Accounts</h1><p class="page-description">Manage account ownership, balances, and account status.</p></div>
+                    <a href="{{ url_for('account.add_account') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add account</a>
+                </section>
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Account records</h2><p>{{ accounts|length }} records in this table</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
+                    <div class="table-scroll"><table class="data-table">
+                        <thead><tr><th>Account</th><th>Customer</th><th>Account type</th><th>Balance</th><th>Status</th><th class="actions-heading">Actions</th></tr></thead>
+                        <tbody>{% for account in accounts %}
+                            <tr>
+                                <td><span class="record-id">AC-{{ account.account_id }}</span></td>
+                                <td><span class="primary-cell">{{ account.first_name }} {{ account.last_name }}</span><span class="secondary-cell">Customer #{{ account.customer_id }}</span></td>
+                                <td>{{ account.account_type }}</td>
+                                <td class="numeric">${{ "{:,.2f}".format(account.balance) }}</td>
+                                <td><span class="status-badge {% if account.account_status == 'Active' %}status-success{% else %}status-neutral{% endif %}">{{ account.account_status }}</span></td>
+                                <td class="row-actions"><a href="{{ url_for('account.update_account', account_id=account.account_id) }}">Edit</a><a class="danger-link" href="{{ url_for('account.delete_confirmation', account_id=account.account_id) }}">Delete</a></td>
+                            </tr>
+                        {% else %}<tr><td class="empty-state" colspan="6">No accounts found. Add an account to get started.</td></tr>{% endfor %}</tbody>
+                    </table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: Accounts</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

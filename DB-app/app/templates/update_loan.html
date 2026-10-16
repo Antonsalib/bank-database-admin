@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Loan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_style.css') }}">
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="cus">Update Loan</h1>
+        <form action="{{ url_for('loan.update_loan', loan_id=loan.loan_id) }}" method="POST" class="form">
+            <div class="form-group">
+                <label for="customer_id">Customer ID:</label>
+                <input type="number" id="customer_id" name="customer_id" value="{{ loan.customer_id }}" required>
+            </div>
+            <div class="form-group">
+                <label for="loan_amount">Loan Amount:</label>
+                <input type="number" id="loan_amount" name="loan_amount" value="{{ loan.loan_amount }}" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="interest_rate">Interest Rate:</label>
+                <input type="number" id="interest_rate" name="interest_rate" value="{{ loan.interest_rate }}" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label for="loan_status">Loan Status:</label>
+                <select id="loan_status" name="loan_status" value="{{ loan.loan_status }}" required>
+                    <option value="" disabled {{ 'selected' if not loan.loan_status else '' }}>Choose a loan status...</option>
+                    <option value="Approved" {{ 'selected' if loan.loan_status == 'Approved' else '' }}>Approved</option>
+                    <option value="Pending" {{ 'selected' if loan.loan_status == 'Pending' else '' }}>Pending</option>
+                    <option value="Closed" {{ 'selected' if loan.loan_status == 'Closed' else '' }}>Closed</option>
+                </select>
+            </div>
+            <div class="button-action">
+                <a href="{{ url_for('loan.Loans') }}"  class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-update">Update</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

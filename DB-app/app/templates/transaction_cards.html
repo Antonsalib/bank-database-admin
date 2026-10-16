@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction cards · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'cards' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Transaction cards</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading">
+                    <div><p class="eyebrow">TABLE · TRANSACTIONCARD</p><h1>Transaction cards</h1><p class="page-description">Manage card and check records associated with transactions.</p></div>
+                    <a href="{{ url_for('transactionCard.add_transaction_card') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add card</a>
+                </section>
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Card records</h2><p>{{ transaction_cards|length }} records in this table</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
+                    <div class="table-scroll"><table class="data-table">
+                        <thead><tr><th>Card record</th><th>Transaction</th><th>Card type</th><th>Transaction type</th><th>Amount</th><th class="actions-heading">Actions</th></tr></thead>
+                        <tbody>{% for transaction_card in transaction_cards %}
+                            <tr>
+                                <td><span class="record-id">CD-{{ transaction_card.transaction_card_id }}</span></td>
+                                <td><span class="primary-cell">Transaction #{{ transaction_card.transaction_id }}</span></td>
+                                <td>{{ transaction_card.card_type }}</td>
+                                <td><span class="status-badge status-neutral">{{ transaction_card.transaction_type }}</span></td>
+                                <td class="numeric">${{ "{:,.2f}".format(transaction_card.amount) }}</td>
+                                <td class="row-actions"><a class="danger-link" href="{{ url_for('transactionCard.delete_confirmation', transaction_card_id=transaction_card.transaction_card_id) }}">Delete</a></td>
+                            </tr>
+                        {% else %}<tr><td class="empty-state" colspan="6">No card records found. Add a card to get started.</td></tr>{% endfor %}</tbody>
+                    </table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: TransactionCard</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

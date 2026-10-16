@@ -1,0 +1,21 @@
+# Local configuration and credentials
+DB-app/db.yaml
+DB-app/.env
+.env
+
+# Local SQL exports contain customer records; use sample_data.sql for demos
+bulk_data.sql
+Values.sql
+Untitled.sql
+
+# Python environments and generated files
+DB-app/devenv/
+DB-app/venv/
+DB-app/.venv/
+**/__pycache__/
+*.py[cod]
+
+# Editor and operating system files
+.DS_Store
+.vscode/
+.idea/

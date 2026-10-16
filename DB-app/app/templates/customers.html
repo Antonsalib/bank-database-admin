@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'customers' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Customers</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading">
+                    <div><p class="eyebrow">TABLE · CUSTOMERS</p><h1>Customers</h1><p class="page-description">Browse customer profiles and manage contact information.</p></div>
+                    <a href="{{ url_for('customer.add_customer') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add customer</a>
+                </section>
+                {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-messages">{% for category, message in messages %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+                <section class="panel table-panel">
+                    <div class="table-toolbar">
+                        <div><h2>Customer records</h2><p>{{ customers|length }} records in this view</p></div>
+                        <form class="table-search" action="{{ url_for('customer.Customers') }}" method="GET">
+                            <label class="visually-hidden" for="customer-search">Search customers</label>
+                            <input id="customer-search" type="search" name="search" value="{{ search_query or '' }}" placeholder="Search customers…">
+                            <button type="submit">Search</button>
+                        </form>
+                    </div>
+                    <div class="table-scroll"><table class="data-table">
+                        <thead><tr><th>Customer</th><th>Email</th><th>Phone</th><th>Address</th><th class="actions-heading">Actions</th></tr></thead>
+                        <tbody>{% for customer in customers %}
+                            <tr>
+                                <td><span class="primary-cell">{{ customer.first_name }} {{ customer.last_name }}</span><span class="secondary-cell">Customer #{{ customer.customer_id }}</span></td>
+                                <td>{{ customer.email }}</td>
+                                <td>{{ customer.phone_number }}</td>
+                                <td>{{ customer.address }}</td>
+                                <td class="row-actions"><a href="{{ url_for('customer.update_customer', customer_id=customer.customer_id) }}">Edit</a><a class="danger-link" href="{{ url_for('customer.delete_confirmation', customer_id=customer.customer_id) }}">Delete</a></td>
+                            </tr>
+                        {% else %}<tr><td class="empty-state" colspan="5">No customers found. Try a different search or add a customer.</td></tr>{% endfor %}</tbody>
+                    </table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: Customers</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

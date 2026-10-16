@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'transactions' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Transactions</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading">
+                    <div><p class="eyebrow">TABLE · TRANSACTIONS</p><h1>Transactions</h1><p class="page-description">Inspect the account activity ledger and transaction metadata.</p></div>
+                    <a href="{{ url_for('transaction.add_transaction') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add transaction</a>
+                </section>
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Transaction records</h2><p>{{ transactions|length }} records in this table</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
+                    <div class="table-scroll"><table class="data-table">
+                        <thead><tr><th>Transaction</th><th>Account</th><th>Related account</th><th>Type</th><th>Date</th><th>Amount</th><th class="actions-heading">Actions</th></tr></thead>
+                        <tbody>{% for transaction in transactions %}
+                            <tr>
+                                <td><span class="record-id">TX-{{ transaction.transaction_id }}</span></td>
+                                <td><span class="primary-cell">Account #{{ transaction.account_id }}</span><span class="secondary-cell">{{ transaction.account_type }}</span></td>
+                                <td>{% if transaction.related_account_id %}Account #{{ transaction.related_account_id }}{% else %}<span class="muted-cell">—</span>{% endif %}</td>
+                                <td><span class="status-badge status-neutral">{{ transaction.transaction_type }}</span></td>
+                                <td>{{ transaction.transaction_date }}</td>
+                                <td class="numeric">${{ "{:,.2f}".format(transaction.amount) }}</td>
+                                <td class="row-actions"><a class="danger-link" href="{{ url_for('transaction.delete_confirmation', transaction_id=transaction.transaction_id) }}">Delete</a></td>
+                            </tr>
+                        {% else %}<tr><td class="empty-state" colspan="7">No transactions found. Add a transaction to get started.</td></tr>{% endfor %}</tbody>
+                    </table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: Transactions</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Transaction Card</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_style.css') }}">
+</head>
+<body>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <h1 class="cus">Add a New Card</h1>
+        <form action="{{ url_for('transactionCard.add_transaction_card') }}" method="POST" class="form">
+            <div class="form-group">
+                <label for="transaction_id">Transaction ID</label>
+                <input type="number" id="transaction_id" name="transaction_id" placeholder="Enter Transaction ID" required>
+            </div>
+            <div class="form-group">
+                <label for="card_type">Card Type</label>
+                <select id="card_type" name="card_type" required>
+                    <option value="" disabled selected>Choose a card type...</option>
+                    <option value="Debit Card">Debit Card</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="Check">Check</option>
+                </select>
+            </div>
+            <div class="button-action">
+                <a href="\transactionCards" class="btn-cancel">Cancel</a>
+                <button type="submit" class="btn-submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<aside class="sidebar">
+    <a class="brand" href="{{ url_for('index') }}">
+        <span class="brand-mark" aria-hidden="true">⌘</span>
+        <span class="brand-copy"><strong>Ledger</strong><small>DATABASE ADMIN</small></span>
+    </a>
+
+    <div class="sidebar-section-label">WORKSPACE</div>
+    <nav class="sidebar-nav" aria-label="Main navigation">
+        <a class="sidebar-link{% if active_page == 'overview' %} active{% endif %}" href="{{ url_for('index') }}">
+            <span class="nav-icon" aria-hidden="true">⌂</span><span>Overview</span>
+        </a>
+        <div class="sidebar-section-label data-label">DATA</div>
+        <a class="sidebar-link{% if active_page == 'customers' %} active{% endif %}" href="{{ url_for('customer.Customers') }}">
+            <span class="nav-icon" aria-hidden="true">◉</span><span>Customers</span>
+        </a>
+        <a class="sidebar-link{% if active_page == 'accounts' %} active{% endif %}" href="{{ url_for('account.Accounts') }}">
+            <span class="nav-icon" aria-hidden="true">▤</span><span>Accounts</span>
+        </a>
+        <a class="sidebar-link{% if active_page == 'loans' %} active{% endif %}" href="{{ url_for('loan.Loans') }}">
+            <span class="nav-icon" aria-hidden="true">▧</span><span>Loans</span>
+        </a>
+        <a class="sidebar-link{% if active_page == 'transactions' %} active{% endif %}" href="{{ url_for('transaction.transactions') }}">
+            <span class="nav-icon" aria-hidden="true">↔</span><span>Transactions</span>
+        </a>
+        <a class="sidebar-link{% if active_page == 'cards' %} active{% endif %}" href="{{ url_for('transactionCard.TransactionCards') }}">
+            <span class="nav-icon" aria-hidden="true">▭</span><span>Transaction cards</span>
+        </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="database-chip">
+            <span class="database-chip-icon" aria-hidden="true">◈</span>
+            <span><strong>Bank</strong><small>MySQL database</small></span>
+            <span class="database-dot" aria-label="Selected database"></span>
+        </div>
+        <div class="sidebar-user"><span class="user-avatar">DB</span><span><strong>Administrator</strong><small>Workspace access</small></span><span class="user-menu">···</span></div>
+    </div>
+</aside>
