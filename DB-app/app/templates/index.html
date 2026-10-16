@@ -103,14 +103,18 @@
                                 <p class="eyebrow">SCHEMA</p>
                                 <h2>Database tables</h2>
                             </div>
-                            <span class="schema-count">5</span>
+                            <span class="schema-count">9</span>
                         </div>
                         <div class="schema-list">
                             <a href="{{ url_for('customer.Customers') }}"><span class="schema-table-icon">▦</span><span><strong>Customers</strong><small>Identity &amp; contact records</small></span><span class="schema-total">{{ stats.customers }}</span></a>
                             <a href="{{ url_for('account.Accounts') }}"><span class="schema-table-icon">▦</span><span><strong>Accounts</strong><small>Checking, savings &amp; cards</small></span><span class="schema-total">{{ stats.accounts }}</span></a>
+                            <a href="{{ url_for('account.Accounts') }}"><span class="schema-table-icon">▦</span><span><strong>AccountOwners</strong><small>Primary &amp; joint ownership</small></span><span class="schema-total">{{ stats.account_owners }}</span></a>
+                            <a href="{{ url_for('branch.branches') }}"><span class="schema-table-icon">▦</span><span><strong>Branches</strong><small>Bank locations</small></span><span class="schema-total">{{ stats.branches }}</span></a>
                             <a href="{{ url_for('loan.Loans') }}"><span class="schema-table-icon">▦</span><span><strong>Loan</strong><small>Customer lending records</small></span><span class="schema-total">{{ stats.loans }}</span></a>
+                            <a href="{{ url_for('loanPayment.loan_payments') }}"><span class="schema-table-icon">▦</span><span><strong>LoanPayments</strong><small>Repayments linked to the ledger</small></span><span class="schema-total">{{ stats.loan_payments }}</span></a>
                             <a href="{{ url_for('transaction.transactions') }}"><span class="schema-table-icon">▦</span><span><strong>Transactions</strong><small>Account activity ledger</small></span><span class="schema-total">{{ stats.transactions }}</span></a>
-                            <a href="{{ url_for('transactionCard.TransactionCards') }}"><span class="schema-table-icon">▦</span><span><strong>TransactionCard</strong><small>Payment method records</small></span><span class="schema-total">{{ stats.transaction_cards }}</span></a>
+                            <a href="{{ url_for('paymentCard.payment_cards') }}"><span class="schema-table-icon">▦</span><span><strong>PaymentCards</strong><small>Account-linked masked cards</small></span><span class="schema-total">{{ stats.payment_cards }}</span></a>
+                            <a href="{{ url_for('transaction.transfers') }}"><span class="schema-table-icon">▦</span><span><strong>Transfers</strong><small>Paired account movements</small></span><span class="schema-total">{{ stats.transfers }}</span></a>
                         </div>
                     </aside>
                 </div>

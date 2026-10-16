@@ -14,7 +14,7 @@
                 <span>&#x274C;</span>
             </div>
             <h2>Are you sure?</h2>
-            <p>Do you really want to delete <strong>{{ account.customer.first_name }} {{ account.customer.last_name }}</strong> account? This process cannot be undone.</p>
+            <p>Do you really want to delete account <strong>#{{ account.account_id }}</strong> owned by {% for ownership in account.ownerships %}<strong>{{ ownership.customer.full_name }}</strong>{% if not loop.last %}, {% endif %}{% endfor %}? This process cannot be undone.</p>
             <div class="modal-actions">
                 <a href="{{ url_for('account.Accounts') }}" class="btn-cancel">Cancel</a>
                 <form action="{{ url_for('account.delete_confirmation') }}?account_id={{ account.account_id }}" method="POST" class="inline-form">

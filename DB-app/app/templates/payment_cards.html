@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment cards · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'cards' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Payment cards</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading"><div><p class="eyebrow">TABLE · PAYMENTCARDS</p><h1>Payment cards</h1><p class="page-description">Manage cards linked to accounts. Only the last four digits are stored.</p></div><a href="{{ url_for('paymentCard.add_payment_card') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add card</a></section>
+                {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-messages">{% for category, message in messages %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Payment card records</h2><p>{{ payment_cards|length }} cards in this table</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
+                    <div class="table-scroll"><table class="data-table"><thead><tr><th>Card</th><th>Account</th><th>Type</th><th>Expires</th><th>Status</th><th class="actions-heading">Actions</th></tr></thead><tbody>
+                        {% for card in payment_cards %}<tr>
+                            <td><span class="record-id">PC-{{ card.payment_card_id }}</span><span class="secondary-cell">•••• {{ card.last_four or '—' }}</span></td>
+                            <td><span class="primary-cell">Account #{{ card.account_id }}</span><span class="secondary-cell">{{ card.account.account_type }}</span></td>
+                            <td>{{ card.card_type }}</td><td>{{ card.expiry_date or 'Not recorded' }}</td>
+                            <td><span class="status-badge {% if card.card_status == 'Active' %}status-success{% elif card.card_status == 'Blocked' %}status-warning{% else %}status-neutral{% endif %}">{{ card.card_status }}</span></td>
+                            <td class="row-actions"><form class="inline-action" method="POST" action="{{ url_for('paymentCard.update_status', payment_card_id=card.payment_card_id) }}"><select class="compact-select" name="card_status" aria-label="Card status for card {{ card.payment_card_id }}"><option value="Active" {% if card.card_status == 'Active' %}selected{% endif %}>Active</option><option value="Blocked" {% if card.card_status == 'Blocked' %}selected{% endif %}>Blocked</option><option value="Expired" {% if card.card_status == 'Expired' %}selected{% endif %}>Expired</option></select><button class="inline-submit" type="submit">Save</button></form><form class="inline-action" method="POST" action="{{ url_for('paymentCard.delete_payment_card', payment_card_id=card.payment_card_id) }}"><button class="danger-link" type="submit">Remove</button></form></td>
+                        </tr>{% else %}<tr><td class="empty-state" colspan="6">No payment cards found. Add a card to get started.</td></tr>{% endfor %}
+                    </tbody></table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: PaymentCards</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

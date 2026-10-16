@@ -10,7 +10,7 @@ import os
 db = SQLAlchemy()
 ma = Marshmallow()
 
-def create_app():
+def create_app(config=None):
     app = Flask(__name__)
 
     # Secret key for flash message
@@ -27,6 +27,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://root:{encoded_password}@localhost/Bank"
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    if config:
+        app.config.update(config)
 
     # Initialize SQLAlchemy and Marshmallow with the app
     db.init_app(app)
@@ -48,20 +50,32 @@ def create_app():
     from .routes.accounts import an 
     app.register_blueprint(an, url_prefix='/accounts')
 
-    # Register blueprints for Transaction Card
-    from .routes.transactionCards import tc 
-    app.register_blueprint(tc, url_prefix='/transactionCards')
+    from .routes.branches import bp as branches_bp
+    app.register_blueprint(branches_bp, url_prefix='/branches')
+
+    from .routes.paymentCards import bp as payment_cards_bp
+    app.register_blueprint(payment_cards_bp, url_prefix='/payment-cards')
+
+    from .routes.loanPayments import bp as loan_payments_bp
+    app.register_blueprint(loan_payments_bp, url_prefix='/loan-payments')
 
     @app.route('/')
     def index():
-        from .models import Account, Customer, Loan, Transaction, TransactionCard
+        from .models import (
+            Account, Branch, Customer, Loan, LoanPayment, PaymentCard,
+            AccountOwner, Transaction, Transfer,
+        )
 
         stats = {
             'customers': Customer.query.count(),
             'accounts': Account.query.count(),
             'loans': Loan.query.count(),
             'transactions': Transaction.query.count(),
-            'transaction_cards': TransactionCard.query.count(),
+            'branches': Branch.query.count(),
+            'payment_cards': PaymentCard.query.count(),
+            'loan_payments': LoanPayment.query.count(),
+            'transfers': Transfer.query.count(),
+            'account_owners': AccountOwner.query.count(),
         }
         recent_transactions = (
             Transaction.query
@@ -69,16 +83,16 @@ def create_app():
             .limit(5)
             .all()
         )
-        return render_template('index.html', stats=stats, recent_transactions=recent_transactions)
+        return render_template(
+            'index.html',
+            stats=stats,
+            recent_transactions=recent_transactions
+        )
 
     # Add global context processor for customers
     @app.context_processor
     def inject_customers():
-        from .models import Customer  # Ensure Customer model is imported here
-        try:
-            customers = Customer.query.all()
-        except Exception as e:
-            customers = []  # Handle database connection errors gracefully
-        return dict(customers=customers)
+        from .models import Customer
+        return dict(customers=Customer.query.all())
 
     return app

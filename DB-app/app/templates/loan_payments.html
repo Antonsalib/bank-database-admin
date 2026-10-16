@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan payments · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'loan_payments' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Loan payments</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading"><div><p class="eyebrow">TABLE · LOANPAYMENTS</p><h1>Loan payments</h1><p class="page-description">Post repayments to approved loans and retain a linked transaction ledger.</p></div><a href="{{ url_for('loanPayment.add_loan_payment') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Post payment</a></section>
+                {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-messages">{% for category, message in messages %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Repayment history</h2><p>{{ loan_payments|length }} posted payments</p></div><span class="table-meta"><span class="database-dot"></span> Ledger linked</span></div>
+                    <div class="table-scroll"><table class="data-table"><thead><tr><th>Payment</th><th>Loan / customer</th><th>Date</th><th>Principal</th><th>Interest</th><th>Total</th><th>Account</th><th>Transaction</th></tr></thead><tbody>
+                        {% for payment in loan_payments %}<tr>
+                            <td><span class="record-id">LP-{{ payment.loan_payment_id }}</span></td>
+                            <td><span class="primary-cell">Loan #{{ payment.loan_id }}</span><span class="secondary-cell">{{ payment.loan.customer.full_name }}</span></td>
+                            <td>{{ payment.payment_date }}</td><td class="numeric">${{ "{:,.2f}".format(payment.principal_amount) }}</td><td class="numeric">${{ "{:,.2f}".format(payment.interest_amount) }}</td><td class="numeric">${{ "{:,.2f}".format(payment.amount) }}</td><td>Account #{{ payment.transaction.account_id }}</td><td>TX-{{ payment.transaction_id }}</td>
+                        </tr>{% else %}<tr><td class="empty-state" colspan="8">No repayments yet. Post a payment to create linked ledger history.</td></tr>{% endfor %}
+                    </tbody></table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: LoanPayments</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

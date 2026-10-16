@@ -1,76 +1,86 @@
 # Bank Database Admin
 
-A Flask application for administering a sample banking database. Browse and manage customers, accounts, loans, transactions, and transaction cards from a responsive dashboard.
+An educational Flask/MySQL project for exploring relational database design through a small banking administration app. It demonstrates normalized ownership relationships, branches, card and loan-payment lifecycles, auditable transactions, and balanced account transfers. It is a local learning/demo application, **not a production banking system**.
 
-## Features
+## What the project models
 
-- Dashboard with database record counts, recent transaction activity, and a table overview.
-- Browse, add, edit, and delete customer, account, and loan records.
-- Browse, add, and delete transactions and transaction-card records.
-- Search customer records by name or email.
-- MySQL schema and sample data scripts for local development.
+- **Customers** can own one or more accounts; accounts can have primary and joint owners.
+- **Branches** group accounts by their servicing location.
+- **Transactions** are a ledger. Transfers create paired debit/credit entries in one database transaction.
+- **PaymentCards** belong to accounts. The app stores only optional last-four digits—never full card numbers or CVVs.
+- **LoanPayments** link a repayment to both its loan and the account transaction that debited the repayment.
+
+The core schema has nine tables: `Customers`, `Accounts`, `AccountOwners`, `Branches`, `Loan`, `LoanPayments`, `Transactions`, `PaymentCards`, and `Transfers`.
 
 ## Requirements
 
 - Python 3.10 or later.
-- MySQL Server and the MySQL command-line client.
+- MySQL 8.0 or later.
 
-## Setup
+## Fresh database setup
 
-1. Create the database schema from the project root:
+From this project root, create the schema:
 
-   ```bash
-   mysql -u root -p < BankTables.sql
-   ```
+```bash
+mysql -u root -p < BankTables.sql
+```
 
-   This script creates the `Bank` database, its tables, foreign keys, and transaction trigger.
+Create a local password configuration:
 
-2. Create the app's local database configuration:
+```bash
+cd DB-app
+cp db.yaml.example db.yaml
+```
 
-   ```bash
-   cd DB-app
-   cp db.yaml.example db.yaml
-   ```
+Edit `DB-app/db.yaml` and set `mysql_password` to your local MySQL root password. The app expects MySQL on `localhost`, the `root` user, and a database named `Bank`. The credentials file is ignored by Git; never commit it.
 
-   Edit `db.yaml` and set `mysql_password` to your local MySQL root password. The application currently connects to MySQL on `localhost` as `root` and uses the `Bank` database. `db.yaml` is ignored by Git and must not be committed.
+Create a Python environment, install dependencies, and run the app:
 
-3. Create and activate a Python virtual environment, then install dependencies:
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python run.py
+```
 
-   ```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   python -m pip install -r requirements.txt
-   ```
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Stop the development server with **Ctrl+C**.
 
-4. Start the application from inside `DB-app`:
-
-   ```bash
-   python run.py
-   ```
-
-   Open [http://127.0.0.1:5000](http://127.0.0.1:5000). Stop the development server with **Ctrl+C**.
-
-On first startup, the app loads synthetic demo rows from `../sample_data.sql` if the `Customers` table is empty. You can also load that SQL file manually from the project root:
+When the database has no customers, the app loads synthetic records from `../sample_data.sql`. To load them manually, run this from the project root after creating the schema:
 
 ```bash
 mysql -u root -p Bank < sample_data.sql
 ```
 
+## Upgrade an existing database
+
+The normalized schema changes the account/customer relationship, replaces transaction-attached cards with account cards, and converts each old transfer into two ledger entries. The migration preserves customer, account, loan, and transaction records and assigns existing accounts to a new `Main Branch`. Legacy card rows become masked card records where applicable; check-payment labels remain on their transactions.
+
+**Back up your database first** and save the backup outside this repository. MySQL schema changes auto-commit, so the migration cannot be rolled back as one transaction.
+
+```bash
+mysqldump -u root -p Bank > "$HOME/Bank-before-001.sql"
+mysql -u root -p < migrations/001_realistic_banking_schema.sql
+```
+
+Run the migration exactly once against the existing `Bank` database. It stops before changing the schema if it finds a legacy transfer without a related account. Do not run `BankTables.sql` over an existing database; that file is for a fresh setup.
+
 ## Project layout
 
 ```text
 .
-├── BankTables.sql       # MySQL database schema and trigger
-├── sample_data.sql      # Synthetic sample rows for local development
+├── BankTables.sql
+├── migrations/
+│   └── 001_realistic_banking_schema.sql
+├── sample_data.sql
 └── DB-app/
-    ├── app/             # Flask app, routes, templates, and static assets
-    ├── db.yaml.example  # Local MySQL password configuration template
+    ├── app/                 # Models, routes, templates, and static assets
+    ├── db.yaml.example
     ├── requirements.txt
     └── run.py
 ```
 
-## Development notes
+## Safety notes
 
-- The original local SQL exports are excluded from Git because they contain customer information. `sample_data.sql` contains synthetic demo records instead.
-- `DB-app/clear_db.py` and `DB-app/reset_db.py` delete database records. Review their contents and confirm the target database before running either script.
-- Do not commit `DB-app/db.yaml`, credentials, or real customer data.
+- `sample_data.sql` contains synthetic demo records. Original local SQL exports with personal data are intentionally excluded.
+- The app is for learning and local demonstrations. Do not use real banking/customer data or real payment-card details.
+- `DB-app/clear_db.py` and `DB-app/reset_db.py` delete database data. Review the target database and back it up before running destructive scripts.

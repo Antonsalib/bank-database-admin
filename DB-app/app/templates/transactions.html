@@ -14,23 +14,24 @@
             <div class="page-content">
                 <section class="page-heading">
                     <div><p class="eyebrow">TABLE · TRANSACTIONS</p><h1>Transactions</h1><p class="page-description">Inspect the account activity ledger and transaction metadata.</p></div>
-                    <a href="{{ url_for('transaction.add_transaction') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add transaction</a>
+                    <div class="heading-actions"><a href="{{ url_for('transaction.add_transfer') }}" class="button button-secondary">Create transfer</a><a href="{{ url_for('transaction.add_transaction') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add transaction</a></div>
                 </section>
                 <section class="panel table-panel">
                     <div class="table-toolbar"><div><h2>Transaction records</h2><p>{{ transactions|length }} records in this table</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
                     <div class="table-scroll"><table class="data-table">
-                        <thead><tr><th>Transaction</th><th>Account</th><th>Related account</th><th>Type</th><th>Date</th><th>Amount</th><th class="actions-heading">Actions</th></tr></thead>
+                        <thead><tr><th>Transaction</th><th>Account</th><th>Related account</th><th>Type</th><th>Method / transfer</th><th>Date</th><th>Amount</th><th class="actions-heading">Actions</th></tr></thead>
                         <tbody>{% for transaction in transactions %}
                             <tr>
                                 <td><span class="record-id">TX-{{ transaction.transaction_id }}</span></td>
-                                <td><span class="primary-cell">Account #{{ transaction.account_id }}</span><span class="secondary-cell">{{ transaction.account_type }}</span></td>
+                                <td><span class="primary-cell">Account #{{ transaction.account_id }}</span><span class="secondary-cell">{{ transaction.account.account_type }}</span></td>
                                 <td>{% if transaction.related_account_id %}Account #{{ transaction.related_account_id }}{% else %}<span class="muted-cell">—</span>{% endif %}</td>
                                 <td><span class="status-badge status-neutral">{{ transaction.transaction_type }}</span></td>
+                                <td>{% if transaction.transfer_id %}Transfer #{{ transaction.transfer_id }}{% elif transaction.payment_card_id %}Card •••• {{ transaction.payment_card.last_four or '—' }}{% else %}{{ transaction.payment_method or '—' }}{% endif %}</td>
                                 <td>{{ transaction.transaction_date }}</td>
                                 <td class="numeric">${{ "{:,.2f}".format(transaction.amount) }}</td>
-                                <td class="row-actions"><a class="danger-link" href="{{ url_for('transaction.delete_confirmation', transaction_id=transaction.transaction_id) }}">Delete</a></td>
+                                <td class="row-actions"><span class="muted-cell">Immutable ledger</span></td>
                             </tr>
-                        {% else %}<tr><td class="empty-state" colspan="7">No transactions found. Add a transaction to get started.</td></tr>{% endfor %}</tbody>
+                        {% else %}<tr><td class="empty-state" colspan="8">No transactions found. Add a transaction to get started.</td></tr>{% endfor %}</tbody>
                     </table></div>
                 </section>
                 <footer class="workspace-footer"><span>Bank database</span><span>Table: Transactions</span></footer>

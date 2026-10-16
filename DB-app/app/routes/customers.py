@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .. import db
-from ..models import Customer, Loan, Account
+from ..models import AccountOwner, Customer, Loan
 
 # Blueprint for customer route
 bp = Blueprint('customer', __name__)
@@ -53,31 +53,12 @@ def delete_confirmation():
     customer_id = request.args.get('customer_id')
     customer = Customer.query.get_or_404(customer_id)
 
-    # Check for associated loans
-    associated_loans = Loan.query.filter_by(customer_id=customer_id).all()
-    if associated_loans:
-        # Separate closed loans
-        closed_loans = [loan for loan in associated_loans if loan.loan_status == 'Closed']
-        open_loans = [loan for loan in associated_loans if loan.loan_status != 'Closed']
+    if Loan.query.filter_by(customer_id=customer_id).first():
+        flash('Customers with loan history cannot be deleted.', 'error')
+        return redirect(url_for('customer.Customers'))
 
-        # Delete closed loans 
-        for loan in closed_loans:
-            db.session.delete(loan)
-        
-        # If there are open loans, prevent customer deletion
-        if open_loans:
-            flash(
-                f"Cannot delete customer ID {customer_id} because they have open loan(s).",
-                "error"
-            )
-            return redirect(url_for('customer.Customers'))
-        
-    associated_accounts = Account.query.filter_by(customer_id=customer_id).all()
-    if associated_accounts:
-        flash(
-                f"Cannot delete customer ID {customer_id} because they have open account(s).",
-                "error"
-            )
+    if AccountOwner.query.filter_by(customer_id=customer_id).first():
+        flash('Remove this customer from all account ownerships before deleting.', 'error')
         return redirect(url_for('customer.Customers'))
 
     if request.method == 'POST':
@@ -109,4 +90,3 @@ def update_customer(customer_id):
 
     # Render a template to show the form with current customer details
     return render_template('update_customer.html', customer=customer)
-

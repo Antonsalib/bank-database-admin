@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfers · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'transfers' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Transfers</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading"><div><p class="eyebrow">TABLE · TRANSFERS</p><h1>Transfers</h1><p class="page-description">Each transfer is recorded as a linked debit and credit in the account ledger.</p></div><a href="{{ url_for('transaction.add_transfer') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Create transfer</a></section>
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Transfer records</h2><p>{{ transfers|length }} transfers</p></div><span class="table-meta"><span class="database-dot"></span> Balanced entries</span></div>
+                    <div class="table-scroll"><table class="data-table"><thead><tr><th>Transfer</th><th>From</th><th>To</th><th>Date</th><th>Amount</th><th>Ledger entries</th></tr></thead><tbody>
+                        {% for transfer in transfers %}<tr>
+                            <td><span class="record-id">TR-{{ transfer.transfer_id }}</span></td>
+                            <td>Account #{{ transfer.from_account_id }} · {{ transfer.from_account.account_type }}</td>
+                            <td>Account #{{ transfer.to_account_id }} · {{ transfer.to_account.account_type }}</td>
+                            <td>{{ transfer.initiated_date }}</td><td class="numeric">${{ "{:,.2f}".format(transfer.amount) }}</td>
+                            <td>{% for entry in transfer.entries %}<span class="status-badge status-neutral">TX-{{ entry.transaction_id }} {{ entry.transaction_type }}</span> {% endfor %}</td>
+                        </tr>{% else %}<tr><td class="empty-state" colspan="6">No transfers found. Create a transfer to post balanced account entries.</td></tr>{% endfor %}
+                    </tbody></table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: Transfers</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

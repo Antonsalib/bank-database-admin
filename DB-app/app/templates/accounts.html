@@ -19,17 +19,18 @@
                 <section class="panel table-panel">
                     <div class="table-toolbar"><div><h2>Account records</h2><p>{{ accounts|length }} records in this table</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
                     <div class="table-scroll"><table class="data-table">
-                        <thead><tr><th>Account</th><th>Customer</th><th>Account type</th><th>Balance</th><th>Status</th><th class="actions-heading">Actions</th></tr></thead>
+                        <thead><tr><th>Account</th><th>Owners</th><th>Branch</th><th>Account type</th><th>Balance</th><th>Status</th><th class="actions-heading">Actions</th></tr></thead>
                         <tbody>{% for account in accounts %}
                             <tr>
                                 <td><span class="record-id">AC-{{ account.account_id }}</span></td>
-                                <td><span class="primary-cell">{{ account.first_name }} {{ account.last_name }}</span><span class="secondary-cell">Customer #{{ account.customer_id }}</span></td>
+                                <td>{% for ownership in account.ownerships %}<span class="primary-cell">{{ ownership.customer.full_name }}</span><span class="secondary-cell">{{ ownership.owner_role }} owner · #{{ ownership.customer_id }}</span>{% endfor %}</td>
+                                <td>{{ account.branch.branch_name }}</td>
                                 <td>{{ account.account_type }}</td>
                                 <td class="numeric">${{ "{:,.2f}".format(account.balance) }}</td>
                                 <td><span class="status-badge {% if account.account_status == 'Active' %}status-success{% else %}status-neutral{% endif %}">{{ account.account_status }}</span></td>
                                 <td class="row-actions"><a href="{{ url_for('account.update_account', account_id=account.account_id) }}">Edit</a><a class="danger-link" href="{{ url_for('account.delete_confirmation', account_id=account.account_id) }}">Delete</a></td>
                             </tr>
-                        {% else %}<tr><td class="empty-state" colspan="6">No accounts found. Add an account to get started.</td></tr>{% endfor %}</tbody>
+                        {% else %}<tr><td class="empty-state" colspan="7">No accounts found. Add an account to get started.</td></tr>{% endfor %}</tbody>
                     </table></div>
                 </section>
                 <footer class="workspace-footer"><span>Bank database</span><span>Table: Accounts</span></footer>

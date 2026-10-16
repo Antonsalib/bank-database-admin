@@ -3,57 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Transaction</title>
+    <title>Add transaction · Bank Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='add_style.css') }}">
 </head>
 <body>
-
-    <!-- Main Content -->
-    <div class="container loan">
-		<!-- Flash Messages -->
-		{% with messages = get_flashed_messages(with_categories=True) %}
-			{% if messages %}
-				<div class="flash-messages">
-					{% for category, message in messages %}
-						<div class="alert {{ category }}">{{ message }}</div>
-					{% endfor %}
-				</div>
-			{% endif %}
-		{% endwith %}
-        <!-- Transaction Form -->
-        <h1 class="cus">Add a New Transaction</h1>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=True) %}{% if messages %}<div class="flash-messages">{% for category, message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+        <h1>Post a transaction</h1>
+        <p class="form-note">Transfers must be created with the linked-transfer form so both ledger entries are recorded.</p>
         <form action="{{ url_for('transaction.add_transaction') }}" method="POST" class="form">
-            <div class="form-group">
-                <label for="account_id">Account ID</label>
-                <input type="number" id="account_id" name="account_id" placeholder="Enter Account ID..." required>
-            </div>
-			<div class="form-group">
-                <label for="related_account_id">Related Account ID (if applicable)</label>
-                <input type="number" id="related_account_id" name="related_account_id" placeholder="Enter Account ID...">
-            </div>
-            <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="number" id="amount" name="amount" placeholder="Enter 300.40..." step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label for="transaction_date">Date</label>
-                <input type="date" id="date" name="transaction_date" placeholder="Enter a Date..." required>
-            </div>
-            <div class="form-group">
-                <label for="transaction_type">Transaction Type</label>
-				<select id="transaction_type" name="transaction_type" required>
-                    <option value="" disabled selected>Choose a transaction type...</option>
-                    <option value="Withdrawal">Withdrawal</option>
-					<option value="Deposit">Deposit</option>
-					<option value="Payment">Payment</option>
-					<option value="Transfer">Transfer</option>
-					<option value="Purchase">Purchase</option>
-                </select>
-            </div>
-            <div class="button-action">
-                <a href="{{ url_for('transaction.transactions') }}" class="btn-cancel">Cancel</a>
-                <button type="submit" class="btn-submit">Submit</button>
-            </div>
+            <div class="form-group"><label for="account_id">Account</label><select id="account_id" name="account_id" required><option value="" disabled selected>Choose an account…</option>{% for account in accounts %}<option value="{{ account.account_id }}">#{{ account.account_id }} · {{ account.account_type }} · {{ account.account_status }}</option>{% endfor %}</select></div>
+            <div class="form-group"><label for="transaction_type">Transaction type</label><select id="transaction_type" name="transaction_type" required><option value="" disabled selected>Choose a type…</option><option value="Deposit">Deposit</option><option value="Withdrawal">Withdrawal</option><option value="Payment">Payment</option><option value="Purchase">Purchase</option></select></div>
+            <div class="form-group"><label for="amount">Amount</label><input id="amount" name="amount" type="number" min="0.01" step="0.01" required></div>
+            <div class="form-group"><label for="transaction_date">Date</label><input id="transaction_date" name="transaction_date" type="date" required></div>
+            <div class="form-group"><label for="payment_card_id">Linked active card (optional)</label><select id="payment_card_id" name="payment_card_id"><option value="">No card selected</option>{% for card in cards %}<option value="{{ card.payment_card_id }}">Card #{{ card.payment_card_id }} · Account #{{ card.account_id }} · {{ card.card_type }} · •••• {{ card.last_four or '—' }}</option>{% endfor %}</select></div>
+            <div class="form-group"><label for="payment_method">Other payment method</label><select id="payment_method" name="payment_method"><option value="">Not recorded</option><option value="Check">Check</option><option value="Cash">Cash</option><option value="Bank Transfer">Bank transfer</option></select></div>
+            <div class="button-action"><a href="{{ url_for('transaction.transactions') }}" class="btn-cancel">Cancel</a><button type="submit" class="btn-submit">Post transaction</button></div>
         </form>
     </div>
 </body>

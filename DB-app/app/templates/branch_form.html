@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ 'Update' if is_edit else 'Add' }} branch · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='add_style.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=True) %}{% if messages %}<div class="flash-messages">{% for category, message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+        <h1>{{ 'Update' if is_edit else 'Add a new' }} branch</h1>
+        <form method="POST" class="form">
+            <div class="form-group"><label for="branch_name">Branch name</label><input id="branch_name" name="branch_name" type="text" maxlength="80" value="{{ branch.branch_name or '' }}" required></div>
+            <div class="form-group"><label for="address">Address</label><input id="address" name="address" type="text" maxlength="160" value="{{ branch.address or '' }}" required></div>
+            <div class="form-group"><label for="phone_number">Phone number</label><input id="phone_number" name="phone_number" type="text" maxlength="20" value="{{ branch.phone_number or '' }}"></div>
+            <div class="button-action"><a href="{{ url_for('branch.branches') }}" class="btn-cancel">Cancel</a><button type="submit" class="btn-submit">{{ 'Save changes' if is_edit else 'Create branch' }}</button></div>
+        </form>
+    </div>
+</body>
+</html>

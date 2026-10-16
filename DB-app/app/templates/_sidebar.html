@@ -19,11 +19,20 @@
         <a class="sidebar-link{% if active_page == 'loans' %} active{% endif %}" href="{{ url_for('loan.Loans') }}">
             <span class="nav-icon" aria-hidden="true">▧</span><span>Loans</span>
         </a>
+        <a class="sidebar-link{% if active_page == 'loan_payments' %} active{% endif %}" href="{{ url_for('loanPayment.loan_payments') }}">
+            <span class="nav-icon" aria-hidden="true">$</span><span>Loan payments</span>
+        </a>
         <a class="sidebar-link{% if active_page == 'transactions' %} active{% endif %}" href="{{ url_for('transaction.transactions') }}">
             <span class="nav-icon" aria-hidden="true">↔</span><span>Transactions</span>
         </a>
-        <a class="sidebar-link{% if active_page == 'cards' %} active{% endif %}" href="{{ url_for('transactionCard.TransactionCards') }}">
-            <span class="nav-icon" aria-hidden="true">▭</span><span>Transaction cards</span>
+        <a class="sidebar-link{% if active_page == 'transfers' %} active{% endif %}" href="{{ url_for('transaction.transfers') }}">
+            <span class="nav-icon" aria-hidden="true">⇄</span><span>Transfers</span>
+        </a>
+        <a class="sidebar-link{% if active_page == 'cards' %} active{% endif %}" href="{{ url_for('paymentCard.payment_cards') }}">
+            <span class="nav-icon" aria-hidden="true">▭</span><span>Payment cards</span>
+        </a>
+        <a class="sidebar-link{% if active_page == 'branches' %} active{% endif %}" href="{{ url_for('branch.branches') }}">
+            <span class="nav-icon" aria-hidden="true">⌖</span><span>Branches</span>
         </a>
     </nav>
 

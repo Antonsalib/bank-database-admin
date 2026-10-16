@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from .. import db
-from ..models import Loan, Customer
+from ..models import Loan, Customer, LoanPayment
 
 # Blueprint for loan routes
 ln = Blueprint('loan', __name__)
@@ -55,6 +55,10 @@ def delete_confirmation():
     loan_id = request.args.get('loan_id')
     loan = Loan.query.get_or_404(loan_id)
 
+    if LoanPayment.query.filter_by(loan_id=loan.loan_id).first():
+        flash('Loans with repayment history cannot be deleted.', 'error')
+        return redirect(url_for('loan.Loans'))
+
     if request.method == 'POST':
         # On confirmation, delete the account
         db.session.delete(loan)
@@ -83,4 +87,3 @@ def update_loan(loan_id):
 
     # Render a template to show the form with current loan details
     return render_template('update_loan.html', loan=loan)
-

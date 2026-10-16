@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branches · Bank Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        {% set active_page = 'branches' %}{% include '_sidebar.html' %}
+        <main class="workspace">
+            <header class="topbar"><div class="breadcrumbs"><span>Bank</span><span class="crumb-separator">/</span><span>Tables</span><span class="crumb-separator">/</span><strong>Branches</strong></div><div class="topbar-meta"><span class="connection-indicator"><span></span> MySQL database</span><span class="topbar-divider"></span><span class="user-avatar">DB</span></div></header>
+            <div class="page-content">
+                <section class="page-heading"><div><p class="eyebrow">TABLE · BRANCHES</p><h1>Branches</h1><p class="page-description">Manage bank locations and their assigned accounts.</p></div><a href="{{ url_for('branch.edit_branch') }}" class="button button-primary"><span class="button-plus" aria-hidden="true">+</span> Add branch</a></section>
+                {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-messages">{% for category, message in messages %}<div class="alert alert-{{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}
+                <section class="panel table-panel">
+                    <div class="table-toolbar"><div><h2>Branch records</h2><p>{{ branches|length }} branches</p></div><span class="table-meta"><span class="database-dot"></span> Live data</span></div>
+                    <div class="table-scroll"><table class="data-table"><thead><tr><th>Branch</th><th>Address</th><th>Phone</th><th>Accounts</th><th class="actions-heading">Actions</th></tr></thead>
+                        <tbody>{% for branch in branches %}<tr>
+                            <td><span class="primary-cell">{{ branch.branch_name }}</span><span class="secondary-cell">Branch #{{ branch.branch_id }}</span></td>
+                            <td>{{ branch.address }}</td><td>{{ branch.phone_number or '—' }}</td><td>{{ branch.accounts|length }}</td>
+                            <td class="row-actions"><a href="{{ url_for('branch.edit_branch', branch_id=branch.branch_id) }}">Edit</a><form class="inline-action" action="{{ url_for('branch.delete_branch', branch_id=branch.branch_id) }}" method="POST"><button class="danger-link" type="submit" {% if branch.accounts %}disabled title="Move accounts before deleting"{% endif %}>Delete</button></form></td>
+                        </tr>{% else %}<tr><td class="empty-state" colspan="5">No branches found. Add a branch to get started.</td></tr>{% endfor %}</tbody>
+                    </table></div>
+                </section>
+                <footer class="workspace-footer"><span>Bank database</span><span>Table: Branches</span></footer>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

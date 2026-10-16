@@ -28,6 +28,8 @@ body {
 }
 .form { display: flex; flex-direction: column; gap: 16px; }
 .form-group { display: flex; flex-direction: column; gap: 7px; }
+.form-group small, .form-note { color: #8792a2; font-size: 11px; line-height: 1.6; }
+.form-note { margin: -12px 0 20px; }
 label { color: #586578; font-size: 12px; font-weight: 600; }
 input[type="text"], input[type="email"], input[type="number"], input[type="date"], select {
     width: 100%;
